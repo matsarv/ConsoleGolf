@@ -55,14 +55,13 @@ namespace ConsoleGolf
             double angle = 0;
             double velocity = 0;
             double totalSwingLength = 0;
-            //double cupDistance = 0;
             double cupDistanceLeft = 0;
             int swingDistanceCount = 0;
             bool stayAlive = true;
             bool startNewPlay = true;
 
             List<double> swingDistance = new List<double>();
-            //Console.WriteLine(course);
+
             while (stayAlive)
             {
                 if (startNewPlay)
@@ -72,9 +71,7 @@ namespace ConsoleGolf
                     Console.WriteLine("\n  Welcome to Mats Golf course!\n");
                     Console.WriteLine("\nTEEE ");
                     Console.WriteLine("Distance of the course is " + cupDistance + " meter.");
-                    //Console.Write("Distance of the course? "); // Distance to cup
-                    //cupDistance = double.Parse(Console.ReadLine());
-                    
+                    cupDistanceLeft = cupDistance;
                     startNewPlay = false;
                 }
                 else
@@ -82,7 +79,7 @@ namespace ConsoleGolf
                     angle = CheckGetAngle(); // Get the angle form user
                     velocity = CheckGetVelocity(); // Get velocity form user
 
-                    double bollDistance = CalculateBollDistance(angle, velocity); // Swing distance 
+                    double bollDistance = Math.Abs(CalculateBollDistance(angle, velocity)); // Swing distance 
 
                     swingDistance.Add(bollDistance); // Save distance
                     swingDistanceCount = swingDistance.Count;
@@ -95,18 +92,15 @@ namespace ConsoleGolf
 
                     foreach (double distance in swingDistance)
                     {
-                        //Console.WriteLine(dist);
                         totalSwingLength = totalSwingLength + distance;
-                        //Console.WriteLine(swingDistance.Count);
-                        cupDistanceLeft = cupDistance - totalSwingLength;
                     }
 
-                    Console.WriteLine("Total swing length: " + totalSwingLength + " meter.");
-                    Console.WriteLine("Length left to cup: " + Math.Abs(cupDistanceLeft) + " meter.");
-                    //Console.WriteLine("Length left: " + Math.Abs(cupDistance - totalSwingLength) + " meter.");
-                    //Console.WriteLine("Length left: " + (cupDistance - totalSwingLength) + " meter.");
+                    cupDistanceLeft = Math.Abs(Math.Round((bollDistance - cupDistanceLeft),2));
 
-                    if (Math.Abs(cupDistanceLeft) < 1) //  
+                    Console.WriteLine("Total swing length: " + totalSwingLength + " meter.");
+                    Console.WriteLine("Length left to cup: " + cupDistanceLeft + " meter.");
+
+                    if (Math.Abs(cupDistanceLeft) < 0.5) //  
                     {
                         Console.WriteLine("\nCOURSE FINISHED\nCongratulation, your ball is in the cup!");
                         for (int i = 0; i < swingDistance.Count; i++)
@@ -124,13 +118,13 @@ namespace ConsoleGolf
                         stayAlive = false;
                     }
 
-                    if (cupDistanceLeft < -100)
+                    if ((cupDistance - cupDistanceLeft) < 0)
                     {
-                        Console.WriteLine("\nYou past the cup to far away, over 100 meters!");
+                        Console.WriteLine("\nYou passed the cup to far away!");
                         Console.ReadKey();
                         stayAlive = false;
                     }
-                    //totalSwingLength = 0;
+
                 }
             }
             Console.Clear();
