@@ -22,33 +22,40 @@ namespace ConsoleGolf
                 "\tCourse 4 = 1500 meter\n" +
                 "");
 
-            Console.Write("  Select the course to play? (1,2,3,4): ");
-            int course = int.Parse(Console.ReadLine());
+            Console.Write("  Select the course to play? (1,2,3,4) and q for exit: ");
+            char course = Console.ReadKey(true).KeyChar;
 
             switch (course)
             {
-                case 1:
+                case '1':
                     Console.Clear();
                     QuestionsAndAnswers(319.5);
                     break;
-                case 2:
+                case '2':
                     Console.Clear();
                     QuestionsAndAnswers(640);
                     break;
-                case 3:
+                case '3':
                     Console.Clear();
                     QuestionsAndAnswers(1000);
                     break;
-                case 4:
+                case '4':
                     Console.Clear();
                     QuestionsAndAnswers(1500);
                     break;
+                case 'q':
+                    DisplayMessage("OK, welcome back to play our course another time.", ConsoleColor.Green);
+                    LeaveGolfCourse();
+                    break;
                 default:
-
+                    DisplayMessage("Sorry, You have entered the wrong key.", ConsoleColor.Red);
+                    LeaveGolfCourse();
                     break;
             }
             Console.Clear();
         }
+
+
 
         static void QuestionsAndAnswers(double cupDistance)
         {
@@ -95,12 +102,12 @@ namespace ConsoleGolf
                         totalSwingLength = totalSwingLength + distance;
                     }
 
-                    cupDistanceLeft = Math.Abs(Math.Round((bollDistance - cupDistanceLeft),2));
+                    cupDistanceLeft = Math.Abs(Math.Round(bollDistance - cupDistanceLeft, 2));
 
                     Console.WriteLine("Total swing length: " + totalSwingLength + " meter.");
                     Console.WriteLine("Length left to cup: " + cupDistanceLeft + " meter.");
 
-                    if (Math.Abs(cupDistanceLeft) < 0.5) //  
+                    if (Math.Abs(cupDistanceLeft) < 0.2) //  
                     {
                         Console.WriteLine("\nCOURSE FINISHED\nCongratulation, your ball is in the cup!");
                         for (int i = 0; i < swingDistance.Count; i++)
@@ -113,23 +120,36 @@ namespace ConsoleGolf
 
                     if (swingDistanceCount == 10)
                     {
-                        Console.WriteLine("\nYou have reach 10 swings, time to move on to next course!");
-                        Console.ReadKey();
+                        DisplayMessage("\nYou have reach 10 swings, time to move on to next course!", ConsoleColor.Red);
                         stayAlive = false;
                     }
 
                     if ((cupDistance - cupDistanceLeft) < 0)
                     {
-                        Console.WriteLine("\nYou passed the cup to far away!");
-                        Console.ReadKey();
+                        DisplayMessage("You passed the cup to far away!", ConsoleColor.Red);
                         stayAlive = false;
                     }
 
                 }
             }
+
+            LeaveGolfCourse();
+        }
+
+        static void DisplayMessage(string message, ConsoleColor color = ConsoleColor.White)
+        {
+            Console.ForegroundColor = color;
+            Console.WriteLine("\n\n  " + message + "\n");
+            Console.ResetColor();
+            Console.WriteLine("\n\n  Press any key to continue...\n");
+            Console.ReadKey();
+        }
+
+        static void LeaveGolfCourse()
+        {
             Console.Clear();
             Console.WriteLine("\n  Welcome to Mats Golf course!\n");
-            Console.WriteLine("\nTime for a Martini in the bar!\nBye, bye!");
+            Console.WriteLine("\n  Time for a Martini in the bar!\n\n  Bye, bye!");
             Console.ReadKey();
         }
 
@@ -137,6 +157,7 @@ namespace ConsoleGolf
         {
             Console.Write("Enter your velocity? (m/s) ");
             double velocity = double.Parse(Console.ReadLine());
+
             if (velocity <= 0 || velocity > 101)
             {
                 Console.WriteLine("Error! World record is 101 m/s.");
@@ -150,19 +171,47 @@ namespace ConsoleGolf
         }
 
         static double CheckGetAngle()
+        {
+
+
+            bool stayAlive = true;
+            int catchloop = 0;
+            do
             {
-            Console.Write("\nEnter your angle? (*) ");
-            double angle = double.Parse(Console.ReadLine());
-            if (angle < 0 || angle >= 90)
-            {
-                Console.WriteLine("Error! Please use between 0 and 90 degrees."); 
-                Console.ReadKey();
-                return CheckGetAngle();
-            }
-            else
-            {
-                return angle;
-            }
+
+
+                try
+                {
+                    Console.Write("\nEnter your angle? (*) ");
+                    double angle = double.Parse(Console.ReadLine());
+                    if (angle < 0 || angle >= 90)
+                    {
+                        Console.WriteLine("Error! Please use between 0 and 90 degrees.");
+                        Console.ReadKey();
+                        return CheckGetAngle();
+                    }
+                    else
+                    {
+                        return angle;
+                    }
+
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Your input was not correct! Try again.");
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Something went wrong! Try again.");
+                }
+            } while (stayAlive);
+            return catchloop;
+
+
+
+
+
+
         }
 
         static double CalculateBollDistance(double angle, double velocity)
@@ -171,7 +220,7 @@ namespace ConsoleGolf
             double angleInRadians = (Math.PI / 180) * angle;
             double Distance = Math.Pow(velocity, 2) / gravity * Math.Sin(2 * angleInRadians);
 
-            return Math.Round(Distance,2);
+            return Math.Round(Distance, 2);
         }
     }
 
