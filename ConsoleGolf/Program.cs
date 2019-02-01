@@ -165,9 +165,9 @@ namespace ConsoleGolf
                 double velocity = 0;
                 velocity = AskForNumber("\nEnter your velocity? (m/s) ");
 
-                if (velocity <= 0 || velocity > 101)
+                if (velocity <= 0 || velocity > 101) 
                 {
-                    Console.WriteLine("World record is 101 m/s. Try again with lower number.");
+                    Console.WriteLine("Please enter a number greater than 0 or lower than 101. The World record is 101 m/s. Try again.");
                     Console.ReadKey();
                 }
                 else
